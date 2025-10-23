@@ -1,0 +1,184 @@
+{
+  "summary": "Bedrohungsmodell STRIDE für eine Active-Directory-Umgebung",
+  "owner": "fbarquez",
+  "reviewer": "Dozent / Prüfer",
+  "version": "1.0",
+  "detail": "Professionelles Bedrohungsmodell für Active Directory basierend auf STRIDE und OWASP-Empfehlungen.",
+  "threats": [
+    {
+      "title": "Spoofing – Gestohlene Anmeldeinformationen",
+      "description": "Ein Angreifer kann sich mit kompromittierten Benutzerkonten oder gefälschten Kerberos-Tickets am Domain Controller anmelden.",
+      "category": "Spoofing",
+      "status": "Offen",
+      "priority": "Hoch",
+      "impact": "Hoch",
+      "likelihood": "Mittel",
+      "mitigation": "Mehrfaktor-Authentifizierung (MFA) aktivieren, Kerberos-Preauthentication erzwingen, verdächtige Anmeldeversuche im SIEM überwachen.",
+      "elementId": "process_dc"
+    },
+    {
+      "title": "Tampering – Manipulation von Gruppenrichtlinien (GPO)",
+      "description": "Administratoren oder Angreifer mit Rechten können GPOs ändern und unsichere Konfigurationen einschleusen.",
+      "category": "Tampering",
+      "status": "Offen",
+      "priority": "Hoch",
+      "impact": "Hoch",
+      "likelihood": "Mittel",
+      "mitigation": "GPO-Versionierung und digitale Signaturen aktivieren, Änderungen protokollieren, Zugriff nur für dedizierte Admin-Konten zulassen.",
+      "elementId": "process_dc"
+    },
+    {
+      "title": "Repudiation – Fehlende Nachvollziehbarkeit",
+      "description": "Ohne zentrale Protokollierung könnten Administratoren Aktionen bestreiten oder Angriffe bleiben unentdeckt.",
+      "category": "Repudiation",
+      "status": "Offen",
+      "priority": "Mittel",
+      "impact": "Mittel",
+      "likelihood": "Mittel",
+      "mitigation": "Zentrale Ereignisprotokollierung im SIEM, unveränderbare Logs (WORM), Audit-Richtlinien aktivieren.",
+      "elementId": "store_siem"
+    },
+    {
+      "title": "Information Disclosure – Unverschlüsselter LDAP-Verkehr",
+      "description": "Anmeldedaten oder Benutzerattribute können im Klartext übertragen werden, wenn LDAP nicht über TLS abgesichert ist.",
+      "category": "Information Disclosure",
+      "status": "Offen",
+      "priority": "Hoch",
+      "impact": "Hoch",
+      "likelihood": "Hoch",
+      "mitigation": "LDAPS/StartTLS erzwingen, TLS 1.2+ verwenden, Zertifikate regelmäßig prüfen.",
+      "elementId": "process_ldap"
+    },
+    {
+      "title": "Denial of Service – Überlastung des Domain Controllers",
+      "description": "Ein Angreifer kann den DC mit massenhaften LDAP- oder Kerberos-Anfragen überlasten.",
+      "category": "Denial of Service",
+      "status": "Offen",
+      "priority": "Mittel",
+      "impact": "Hoch",
+      "likelihood": "Mittel",
+      "mitigation": "Rate-Limiting, Netzwerksegmentierung, redundante DCs bereitstellen, Ressourcen-Monitoring aktivieren.",
+      "elementId": "process_dc"
+    },
+    {
+      "title": "Elevation of Privilege – Eskalation zu Domain-Admin-Rechten",
+      "description": "Ein Benutzer mit geringen Rechten kann Schwachstellen oder Fehlkonfigurationen ausnutzen, um Domänen-Adminrechte zu erhalten.",
+      "category": "Elevation of Privilege",
+      "status": "Offen",
+      "priority": "Kritisch",
+      "impact": "Hoch",
+      "likelihood": "Hoch",
+      "mitigation": "Prinzip der minimalen Rechte (PoLP), Just-in-Time- und Just-Enough-Administration (JIT/JEA), EDR-Überwachung und Tiered-Admin-Modell.",
+      "elementId": "process_dc"
+    }
+  ],
+  "diagram": {
+    "cells": [
+      {
+        "id": "actor_user",
+        "type": "tm.Actor",
+        "attrs": { "text": { "text": "Interner Benutzer" } },
+        "position": { "x": 100, "y": 300 },
+        "size": { "width": 120, "height": 50 }
+      },
+      {
+        "id": "actor_attacker",
+        "type": "tm.Actor",
+        "attrs": { "text": { "text": "Externer Angreifer" } },
+        "position": { "x": 100, "y": 80 },
+        "size": { "width": 130, "height": 50 }
+      },
+      {
+        "id": "process_client",
+        "type": "tm.Process",
+        "attrs": { "text": { "text": "Windows-Client" } },
+        "position": { "x": 320, "y": 300 },
+        "size": { "width": 130, "height": 60 }
+      },
+      {
+        "id": "process_dc",
+        "type": "tm.Process",
+        "attrs": { "text": { "text": "Domain Controller (DC)" } },
+        "position": { "x": 560, "y": 300 },
+        "size": { "width": 180, "height": 60 }
+      },
+      {
+        "id": "process_ldap",
+        "type": "tm.Process",
+        "attrs": { "text": { "text": "LDAP / Kerberos-Server" } },
+        "position": { "x": 560, "y": 180 },
+        "size": { "width": 180, "height": 60 }
+      },
+      {
+        "id": "process_dns",
+        "type": "tm.Process",
+        "attrs": { "text": { "text": "DNS-Server" } },
+        "position": { "x": 560, "y": 420 },
+        "size": { "width": 150, "height": 60 }
+      },
+      {
+        "id": "store_ntds",
+        "type": "tm.Store",
+        "attrs": { "text": { "text": "AD-Datenbank (NTDS.dit)" } },
+        "position": { "x": 820, "y": 300 },
+        "size": { "width": 200, "height": 60 }
+      },
+      {
+        "id": "store_siem",
+        "type": "tm.Store",
+        "attrs": { "text": { "text": "SIEM / Audit-Logs" } },
+        "position": { "x": 820, "y": 420 },
+        "size": { "width": 200, "height": 60 }
+      },
+      {
+        "id": "flow_user_client",
+        "type": "tm.Flow",
+        "source": { "id": "actor_user" },
+        "target": { "id": "process_client" },
+        "labels": [{ "attrs": { "text": { "text": "Benutzeranmeldung" } } }]
+      },
+      {
+        "id": "flow_client_dc",
+        "type": "tm.Flow",
+        "source": { "id": "process_client" },
+        "target": { "id": "process_dc" },
+        "labels": [{ "attrs": { "text": { "text": "Kerberos-Authentifizierung" } } }]
+      },
+      {
+        "id": "flow_dc_ldap",
+        "type": "tm.Flow",
+        "source": { "id": "process_dc" },
+        "target": { "id": "process_ldap" },
+        "labels": [{ "attrs": { "text": { "text": "LDAP-Abfragen" } } }]
+      },
+      {
+        "id": "flow_dc_dns",
+        "type": "tm.Flow",
+        "source": { "id": "process_dc" },
+        "target": { "id": "process_dns" },
+        "labels": [{ "attrs": { "text": { "text": "DNS-Anfragen" } } }]
+      },
+      {
+        "id": "flow_dc_ntds",
+        "type": "tm.Flow",
+        "source": { "id": "process_dc" },
+        "target": { "id": "store_ntds" },
+        "labels": [{ "attrs": { "text": { "text": "Lesen/Schreiben von Benutzerobjekten" } } }]
+      },
+      {
+        "id": "flow_dc_siem",
+        "type": "tm.Flow",
+        "source": { "id": "process_dc" },
+        "target": { "id": "store_siem" },
+        "labels": [{ "attrs": { "text": { "text": "Übertragung von Logs" } } }]
+      },
+      {
+        "id": "flow_attacker_dc",
+        "type": "tm.Flow",
+        "source": { "id": "actor_attacker" },
+        "target": { "id": "process_dc" },
+        "labels": [{ "attrs": { "text": { "text": "Externe Angriffe / Brute-Force" } } }]
+      }
+    ]
+  }
+}
