@@ -1,0 +1,26 @@
+{
+  "version": "2.5.0",
+  "summary": {
+    "title": "Active Directory STRIDE Modell",
+    "owner": "fbarquez",
+    "description": "Dieses Bedrohungsmodell beschreibt eine typische Active-Directory-Umgebung (DC, LDAP/Kerberos, DNS, SIEM) nach der STRIDE-Methodik gemäß OWASP Threat Dragon.",
+    "id": 0
+  },
+  "detail": {
+    "contributors": [],
+    "diagrams": [
+      {
+        "id": 0,
+        "title": "Active Directory STRIDE Diagramm",
+        "diagramType": "STRIDE",
+        "placeholder": "New STRIDE diagram description",
+        "thumbnail": "./public/content/images/thumbnail.stride.jpg",
+        "version": "2.5.0",
+        "cells": []
+      }
+    ],
+    "diagramTop": 2,
+    "reviewer": "Dozent",
+    "threatTop": 0
+  }
+}
